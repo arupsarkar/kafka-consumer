@@ -1,8 +1,20 @@
 const express = require("express");
 const port = process.env.PORT || 5000;
 const cors = require("cors");
-const Kafka = require('no-kafka');
 const Promise = require('bluebird');
+const Kafka = require('no-kafka');
+const consumer = new Kafka.SimpleConsumer();
+consumer.init();
+let kafkaPrefix = process.env.KAFKA_PREFIX;
+if (kafkaPrefix === undefined) {
+  kafkaPrefix = '';
+}
+// const kafka = require('kafka-node'),
+//     Producer = kafka.Producer,
+//     KeyedMessage = kafka.KeyedMessage,
+//     client = new kafka.KafkaClient(),
+//     producer = new Producer(client),
+//     km = new KeyedMessage('key', 'message');
 
 const app = express();
 
@@ -10,24 +22,38 @@ const app = express();
 app.use(cors());
 // request data from req.body from the client
 app.use(express.json());
+app.get('/', async(req, res, next) => {
 
-// kafka integration
-let consumer = new Kafka.SimpleConsumer();
+    const data = { topic: 'key', messages: 'hi'};
+    res.send(data);
+});
+
+// kafka integration - start
+
 // data handler function can return a Promise
-let dataHandler = function (messageSet, topic, partition) {
-    return Promise.each(messageSet, function (m){
+let dataHandler = function (messageSet, topic, partition ) {
+    console.log(new Date(), topic);
+    console.log(new Date(), partition);
+    console.log(new Date(), messageSet);
+    // check for null
+    if(messageSet) {
+      messageSet.forEach(function (m) {
         console.log(topic, partition, m.offset, m.message.value.toString('utf8'));
-        // commit offset
-        return consumer.commitOffset({topic: topic, partition: partition, offset: m.offset, metadata: 'optional'});
-    });
-};
+      });
+    }
+  
+  };
 
-let strategies = [{
-    subscriptions: ['apalachicola-477.interactions'],
-    handler: dataHandler
-}];
+  consumer.subscribe(kafkaPrefix + 'interactions', dataHandler).then(r => {
+    if(r) {
+      console.log(new Date(), '---> consumer result ' + r ) ;
+    }else {
+      console.log(new Date(), '---> consumer result is null ') ;
+    }
+  });
 
-consumer.init(strategies);
+// kafka integration - end
+
 
 app.listen(port, () => {
     console.log("Node server started on port " + port);
