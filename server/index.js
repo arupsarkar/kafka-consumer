@@ -4,7 +4,8 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 const Promise = require('bluebird');
 const Kafka = require('no-kafka');
-const { pool } = require('./config')
+const { pool } = require('./config');
+const { values } = require('lodash');
 const consumer = new Kafka.SimpleConsumer();
 consumer.init();
 let kafkaPrefix = process.env.KAFKA_PREFIX;
@@ -68,6 +69,20 @@ let dataHandler = function (messageSet, topic, partition ) {
 // kafka integration - end
 
 
+// database insert of twitter records - start
+
+let insertData = function(t) {
+    pool.query('INSERT INTO tbl_tweet (timestamp_ms, created_at, id, text) VALUES ($1, $2, $3, $4)', 
+                [t.timestamp_ms, t.created_at, t.id, t.text], 
+                error => {
+                    if (error) {
+                    throw error
+                    }
+                    console.log(Date.now(), 'Tweet record added successfully');
+                });
+}
+
+// database insert of twitter records - end
 app.listen(port, () => {
     console.log("Node server started on port " + port);
 });
