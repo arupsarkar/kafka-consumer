@@ -43,9 +43,12 @@ let dataHandler = function (messageSet, topic, partition ) {
       messageSet.forEach(function (m) {
         //console.log(topic, partition, m.offset, m.message.value.toString('utf8'));
         let data = m.message.value;
-        console.log(Date.now(), data.text);
-        console.log(Date.now(), data.id);
+        console.log(new Date(), '---> Tweet data - start ') ;        
+        console.log(Date.now(), JSON.stringify(data));
+        console.log(new Date(), '---> Tweet data - end ') ;                
         //console.log(JSON.stringify(m.message.value.toString('utf8')));
+        console.log(new Date(), '---> save to db - start ') ;
+        console.log(new Date(), '---> save to db - end ') ;        
       });
     }
   
@@ -54,8 +57,7 @@ let dataHandler = function (messageSet, topic, partition ) {
   consumer.subscribe(kafkaPrefix + 'interactions', dataHandler).then(r => {
     if(r) {
       console.log(new Date(), '---> consumer result ' + JSON.stringify(r) ) ;
-      console.log(new Date(), '---> save to db - start ') ;
-      console.log(new Date(), '---> save to db - end ') ;
+
     }else {
       console.log(new Date(), '---> consumer result is null ') ;
     }
