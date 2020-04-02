@@ -73,8 +73,21 @@ let dataHandler = function (messageSet, topic, partition ) {
 // database insert of twitter records - start
 
 let insertData = function(t) {
+  let tweet_text = '';
+  // check for extended tweet for full_text else regular text
+  if(t) {
+    console.log(Date.now(), '---> Extended Tweet ' + t.truncated);
+    if(t.truncated) {
+      tweet_text = t.extended_tweet.full_text;
+      console.log(Date.now(), '---> Extended Tweet text' + tweet_text );
+    }else {
+      tweet_text = t.text;
+      console.log(Date.now(), '---> Normal Tweet text' + tweet_text );
+    }
+  }
+  
     pool.query('INSERT INTO tbl_tweet (created_at, id, text) VALUES ($1, $2, $3)', 
-                [t.created_at, t.id, t.extended_tweet.full_text], 
+                [t.created_at, t.id, tweet_text], 
                 error => {
                     if (error) {
                     throw error
