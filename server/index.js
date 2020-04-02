@@ -1,4 +1,5 @@
-const express = require("express");
+const express = require('express');
+const bodyParser = require('body-parser')
 const port = process.env.PORT || 5000;
 const cors = require("cors");
 const Promise = require('bluebird');
@@ -22,7 +23,7 @@ const app = express();
 //middleware
 app.use(cors());
 // request data from req.body from the client
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', async(req, res, next) => {
 
