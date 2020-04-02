@@ -51,6 +51,7 @@ let dataHandler = function (messageSet, topic, partition ) {
         console.log(new Date(), '---> Tweet data - end ') ;                
         //console.log(JSON.stringify(m.message.value.toString('utf8')));
         console.log(new Date(), '---> save to db - start ') ;
+        insertData(tweet);
         console.log(new Date(), '---> save to db - end ') ;        
       });
     }
