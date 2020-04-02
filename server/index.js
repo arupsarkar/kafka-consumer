@@ -47,6 +47,13 @@ let dataHandler = function (messageSet, topic, partition ) {
         console.log(new Date(), '---> Tweet data - start ') ;        
         console.log(Date.now(), JSON.stringify(data));
         let tweet = JSON.parse(data);
+
+        if(tweet.truncated) {
+          console.log(Date.now(), '---> Extended Tweet text' + tweet.extended_tweet.full_text );
+        }else {
+          console.log(Date.now(), '---> Normal Tweet text' + tweet.text );
+        }
+
         console.log(Date.now(), JSON.stringify(tweet.extended_tweet.full_text));
         console.log(new Date(), '---> Tweet data - end ') ;                
         //console.log(JSON.stringify(m.message.value.toString('utf8')));
@@ -85,7 +92,7 @@ let insertData = function(t) {
       console.log(Date.now(), '---> Normal Tweet text' + tweet_text );
     }
   }
-  
+
     pool.query('INSERT INTO tbl_tweet (created_at, id, text) VALUES ($1, $2, $3)', 
                 [t.created_at, t.id, tweet_text], 
                 error => {
