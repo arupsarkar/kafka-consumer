@@ -47,7 +47,7 @@ let dataHandler = function (messageSet, topic, partition ) {
         console.log(new Date(), '---> Tweet data - start ') ;        
         console.log(Date.now(), JSON.stringify(data));
         let tweet = JSON.parse(data);
-        console.log(Date.now(), JSON.stringify(tweet.text));
+        console.log(Date.now(), JSON.stringify(tweet.extended_tweet.full_text));
         console.log(new Date(), '---> Tweet data - end ') ;                
         //console.log(JSON.stringify(m.message.value.toString('utf8')));
         console.log(new Date(), '---> save to db - start ') ;
@@ -74,7 +74,7 @@ let dataHandler = function (messageSet, topic, partition ) {
 
 let insertData = function(t) {
     pool.query('INSERT INTO tbl_tweet (created_at, id, text) VALUES ($1, $2, $3)', 
-                [t.created_at, t.id, t.text], 
+                [t.created_at, t.id, t.extended_tweet.full_text], 
                 error => {
                     if (error) {
                     throw error
