@@ -3,6 +3,7 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 const Promise = require('bluebird');
 const Kafka = require('no-kafka');
+const { pool } = require('./config')
 const consumer = new Kafka.SimpleConsumer();
 consumer.init();
 let kafkaPrefix = process.env.KAFKA_PREFIX;
@@ -22,6 +23,7 @@ const app = express();
 app.use(cors());
 // request data from req.body from the client
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', async(req, res, next) => {
 
     const data = { topic: 'key', messages: 'hi'};
@@ -38,7 +40,11 @@ let dataHandler = function (messageSet, topic, partition ) {
     // check for null
     if(messageSet) {
       messageSet.forEach(function (m) {
-        console.log(topic, partition, m.offset, m.message.value.toString('utf8'));
+        //console.log(topic, partition, m.offset, m.message.value.toString('utf8'));
+        let data = m.message.value;
+        console.log(Date.now(), data.text);
+        console.log(Date.now(), data.id);
+        //console.log(JSON.stringify(m.message.value.toString('utf8')));
       });
     }
   
@@ -46,7 +52,9 @@ let dataHandler = function (messageSet, topic, partition ) {
 
   consumer.subscribe(kafkaPrefix + 'interactions', dataHandler).then(r => {
     if(r) {
-      console.log(new Date(), '---> consumer result ' + r ) ;
+      console.log(new Date(), '---> consumer result ' + JSON.stringify(r) ) ;
+      console.log(new Date(), '---> save to db - start ') ;
+      console.log(new Date(), '---> save to db - end ') ;
     }else {
       console.log(new Date(), '---> consumer result is null ') ;
     }

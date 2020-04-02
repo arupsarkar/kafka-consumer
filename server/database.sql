@@ -1,0 +1,20 @@
+create table tbl_tweet (
+    tweet_id SERIAL PRIMARY KEY,
+    timestamp_ms TIMESTAMP,
+    created_at VARCHAR (50),
+    id bigserial,
+    text VARCHAR,
+    source varchar(255),
+    lang varchar(50),
+    user_id bigserial,
+    user_name varchar(255),
+    user_screen_name varchar(255),
+    user_location varchar(255),
+    user_image_url varchar(255),
+    quote_count numeric,
+    reply_count numeric,
+    retweet_count numeric,
+    favorite_count numeric,
+    sentiment varchar(100),
+    sentiment_score decimal
+);
