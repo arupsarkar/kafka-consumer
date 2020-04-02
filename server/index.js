@@ -73,8 +73,8 @@ let dataHandler = function (messageSet, topic, partition ) {
 // database insert of twitter records - start
 
 let insertData = function(t) {
-    pool.query('INSERT INTO tbl_tweet (timestamp_ms, created_at, id, text) VALUES ($1, $2, $3, $4)', 
-                [t.timestamp_ms, t.created_at, t.id, t.text], 
+    pool.query('INSERT INTO tbl_tweet (created_at, id, text) VALUES ($1, $2, $3)', 
+                [t.created_at, t.id, t.text], 
                 error => {
                     if (error) {
                     throw error
