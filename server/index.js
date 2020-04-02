@@ -42,9 +42,10 @@ let dataHandler = function (messageSet, topic, partition ) {
     if(messageSet) {
       messageSet.forEach(function (m) {
         //console.log(topic, partition, m.offset, m.message.value.toString('utf8'));
-        let data = m.message.value;
+        let data = m.message.value.toString('utf8');
         console.log(new Date(), '---> Tweet data - start ') ;        
         console.log(Date.now(), JSON.stringify(data));
+        console.log(Date.now(), JSON.stringify(data.text));
         console.log(new Date(), '---> Tweet data - end ') ;                
         //console.log(JSON.stringify(m.message.value.toString('utf8')));
         console.log(new Date(), '---> save to db - start ') ;
